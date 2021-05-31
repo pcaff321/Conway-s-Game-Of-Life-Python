@@ -95,7 +95,7 @@ def start_sim():
     startButton.destroy()
     c1.destroy()
 
-   # update()
+    update()
 
 
 w = 400
