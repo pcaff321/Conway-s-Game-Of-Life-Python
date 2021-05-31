@@ -33,18 +33,28 @@ def make_grid():
     return grid_
 
 
-def random_living(amount):
+def random_living():
     global rows
     global cols
     global grid
-    amount = amount % (rows * cols)
-    i = 0
-    while i < amount:
-        x, y = random.randint(0, rows - 1), random.randint(0, cols - 1)
-        cell = grid[x][y]
-        if not cell.alive():
-            cell.update(1)
-            i += 1
+    global random_cells
+    global amount
+    if random_cells.get():
+        available = list()
+        for i in range(rows):
+            for j in range(cols):
+                available.append((i, j))
+        random.shuffle(available)  # randomise list
+        for i in range(amount):
+            cell_pos = available.pop()
+            cell = grid[cell_pos[0]][cell_pos[1]]
+            if not cell.alive():
+                cell.update(1)
+                i += 1
+    else:
+        for i in grid:
+            for j in i:
+                j.update(0)
 
 
 def update():
@@ -80,21 +90,30 @@ def start_sim():
     global canvas
     global grid
     global startButton
-    startButton.destroy()
+    global c1
 
-    update()
+    startButton.destroy()
+    c1.destroy()
+
+   # update()
 
 
 w = 400
 cols = 20
 rows = 20
-timer = 500  # in ms
+timer = 300  # in ms
+amount = 30
+random_cells = BooleanVar()
 
 canvas = Canvas(root, width=w, height=w)
 canvas.pack()
 grid = make_grid()
 
-startButton = Button(root, text="Start Simulation", padx=30,pady=20, command=start_sim)
+startButton = Button(root, text="Start Simulation", padx=30, pady=20, command=start_sim)
 startButton.pack()
+
+c1 = Checkbutton(root, text='Randomise Cells', variable=random_cells, onvalue=True, offvalue=False,
+                 command=random_living)
+c1.pack()
 
 root.mainloop()
