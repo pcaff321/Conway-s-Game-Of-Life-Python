@@ -5,6 +5,13 @@ from Cell import *
 
 root = Tk()
 grid = None
+drawing = True
+
+
+def clicked(event, cell):
+    global drawing
+    if drawing:
+        cell.update(not cell.alive())
 
 
 def make_grid():
@@ -18,9 +25,26 @@ def make_grid():
     for i in range(rows):
         for j in range(cols):
             label = canvas.create_rectangle((i * size_x, j * size_y,
-                                             i * size_x + w/cols, j * size_y + w/rows), fill='white')
-            grid_[i][j] = Cell(canvas, label, random.randint(0, 1))
+                                             i * size_x + w/cols, j * size_y + w/rows), fill='white',
+                                            tag='cell' + str(i) + str(j))
+            cell = Cell(canvas, label)
+            grid_[i][j] = cell
+            canvas.tag_bind('cell' + str(i) + str(j), "<Button-1>", lambda event, c=cell: clicked(event, c))
     return grid_
+
+
+def random_living(amount):
+    global rows
+    global cols
+    global grid
+    amount = amount % (rows * cols)
+    i = 0
+    while i < amount:
+        x, y = random.randint(0, rows - 1), random.randint(0, cols - 1)
+        cell = grid[x][y]
+        if not cell.alive():
+            cell.update(1)
+            i += 1
 
 
 def update():
@@ -57,21 +81,20 @@ def start_sim():
     global grid
     global startButton
     startButton.destroy()
-    grid = make_grid()
 
     update()
 
 
-w = 800
-cols = 30
-rows = 30
-timer = 300  # in ms
+w = 400
+cols = 20
+rows = 20
+timer = 500  # in ms
 
 canvas = Canvas(root, width=w, height=w)
-
+canvas.pack()
+grid = make_grid()
 
 startButton = Button(root, text="Start Simulation", padx=30,pady=20, command=start_sim)
 startButton.pack()
-canvas.pack()
 
 root.mainloop()
