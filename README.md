@@ -5,3 +5,6 @@ A python implementation using the Tkinter module to simulate Conway's Game of Li
 
 Simply run main.py to start the application, then click on areas on the grid to activate those cells(to toggle them alive or dead). Once you're happy with your simulation design, press start.
 
+<img src="images/SimulationRunningGameOfLife.png" />
+
+
